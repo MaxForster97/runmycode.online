@@ -1,0 +1,42 @@
+import itertools
+
+def find_optimal_queue_distribution(tasks, overall_queue_capacity, num_processors, processing_times, variances):
+    # Create a list of all possible combinations of queue capacities
+    queue_capacity_combinations = list(itertools.product(range(overall_queue_capacity + 1), repeat=num_processors))
+
+    # Initialize the optimal queue distribution and minimum production time
+    optimal_queue_distribution = None
+    min_production_time = float("inf")
+
+    # Iterate over all queue capacity combinations
+    for queue_distribution in queue_capacity_combinations:
+        # Check if the overall queue capacity is correct
+        if sum(queue_distribution) == overall_queue_capacity:
+            # Initialize the production time for this queue distribution
+            production_time = 0
+
+            # Iterate over the tasks
+            for task in tasks:
+                # Iterate over the processors and queues
+                for processor, queue in zip(processing_times, queue_distribution):
+                    # Process the task through the current processor
+                    processing_time = random.gauss(processor, variances[i])
+                    production_time += processing_time
+
+                    # If the queue is full, wait until a task is removed from the queue
+                    while len(queue) == queue_capacity:
+                        production_time += processing_time
+
+                    # Add the task to the queue
+                    queue.enqueue(task)
+
+            # If the production time for this queue distribution is lower than the current minimum,
+            # update the optimal queue distribution and minimum production time
+            if production_time < min_production_time:
+                min_production_time = production_time
+                optimal_queue_distribution = queue_distribution
+
+    return optimal_queue_distribution
+
+optimal_queue_distribution = find_optimal_queue_distribution(100, 50, 3, [10, 50, 10], [3, 4, 3])
+print(optimal_queue_distribution)
